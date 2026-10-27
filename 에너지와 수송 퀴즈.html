@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ 에너지와 수송 개념 퀴즈 (교실 대형 화면용)</title>
+    <style>
+        :root {
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-primary: #1f2937;
+            --text-secondary: #4b5563;
+            --accent-color: #4f46e5;
+            --accent-hover: #4338ca;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --border-radius: 20px;
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode {
+            --bg-color: #111827;
+            --card-bg: #1f2937;
+            --text-primary: #f9fafb;
+            --text-secondary: #d1d5db;
+            --accent-color: #6366f1;
+            --accent-hover: #818cf8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        header {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .title-container h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .title-container p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .top-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .icon-btn {
+            background: var(--card-bg);
+            border: 2px solid #e5e7eb;
+            color: var(--text-primary);
+            padding: 10px 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        body.dark-mode .icon-btn {
+            border-color: #374151;
+        }
+
+        .icon-btn:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-color);
+        }
+
+        .progress-wrapper {
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 20px;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 12px;
+            background-color: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        body.dark-mode .progress-container {
+            background-color: #374151;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent-color), #8b5cf6);
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .card-container {
+            width: 100%;
+            max-width: 800px;
+            height: 380px;
+            perspective: 1000px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-container.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: var(--border-radius);
+            background-color: var(--card-bg);
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 3px solid transparent;
+            transition: border-color 0.3s;
+        }
+
+        .card-front {
+            border-color: #e5e7eb;
+        }
+
+        body.dark-mode .card-front {
+            border-color: #374151;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            background-color: var(--card-bg);
+            border-color: var(--accent-color);
+        }
+
+        .badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: #e0e7ff;
+            color: var(--accent-color);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        body.dark-mode .badge {
+            background: #312e81;
+            color: #c7d2fe;
+        }
+
+        .flip-hint {
+            position: absolute;
+            bottom: 20px;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            opacity: 0.8;
+        }
+
+        .card-text {
+            font-size: 2.1rem; /* 중2 맞춤용 큰 글씨 */
+            font-weight: 800;
+            line-height: 1.4;
+            word-break: keep-all;
+            color: var(--text-primary);
+        }
+
+        .card-back .card-text {
+            color: var(--accent-color);
+            font-size: 2.8rem;
+        }
+
+        .hint-box {
+            margin-top: 20px;
+            background: #fffbe3;
+            border: 1px solid #fde68a;
+            color: #92400e;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 1.15rem;
+            font-weight: 600;
+            display: none;
+            max-width: 90%;
+            word-break: keep-all;
+        }
+
+        body.dark-mode .hint-box {
+            background: #451a03;
+            border-color: #78350f;
+            color: #fef3c7;
+        }
+
+        .hint-box.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .controls {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .score-buttons {
+            display: flex;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .btn-score {
+            flex: 1;
+            padding: 16px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            border-radius: 16px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .btn-wrong {
+            background-color: #fee2e2;
+            color: var(--danger-color);
+        }
+
+        .btn-wrong:hover {
+            background-color: #fecaca;
+            transform: translateY(-2px);
+        }
+
+        .btn-correct {
+            background-color: #d1fae5;
+            color: var(--success-color);
+        }
+
+        .btn-correct:hover {
+            background-color: #a7f3d0;
+            transform: translateY(-2px);
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-main {
+            padding: 14px 22px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 14px;
+            border: 2px solid #e5e7eb;
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        body.dark-mode .btn-main {
+            border-color: #374151;
+        }
+
+        .btn-main:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-accent {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+        }
+
+        .btn-accent:hover {
+            background-color: var(--accent-hover);
+            color: white;
+        }
+
+        footer {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .keyboard-tip {
+            margin-top: 6px;
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+
+        /* 모바일 대응 */
+        @media (max-width: 640px) {
+            .card-container { height: 320px; }
+            .card-text { font-size: 1.6rem; }
+            .card-back .card-text { font-size: 2.2rem; }
+            .btn-score { padding: 12px; font-size: 1rem; }
+            .btn-main { padding: 10px 14px; font-size: 0.95rem; }
+        }
+
+        /* 교실 프로젝터용: 문제와 정답의 가독성을 최우선으로 설정 */
+        header, .progress-wrapper, .card-container, .controls { max-width: 1240px; }
+        body { padding: 14px 26px; }
+        header { margin-bottom: 10px; }
+        .title-container h1 { font-size: clamp(1.55rem, 2.5vw, 2.25rem); }
+        .card-container { height: clamp(390px, 56vh, 650px); margin-bottom: 14px; }
+        .card-front, .card-back { padding: 64px 44px 55px; }
+        .card-text { font-size: clamp(2rem, 3.5vw, 3.65rem); line-height: 1.42; font-weight: 900; letter-spacing: -0.035em; overflow-wrap: break-word; }
+        .card-back .card-text { font-size: clamp(3.5rem, 6.8vw, 6.5rem); line-height: 1.25; font-weight: 900; }
+        .hint-box { font-size: clamp(1.3rem, 2.2vw, 2rem); line-height: 1.4; }
+        .badge { font-size: 1.15rem; }
+        .flip-hint { font-size: 1.05rem; }
+        .btn-score { font-size: 1.4rem; padding: 13px; }
+        .btn-main { font-size: 1.18rem; }
+        .stats-bar { font-size: 1.25rem; }
+        .font-controls { display:flex; gap:6px; align-items:center; }
+        .font-controls .icon-btn { padding: 9px 12px; }
+        @media (max-width: 640px) {
+          body { padding: 12px; }
+          header { flex-wrap: wrap; gap: 10px; }
+          .card-container { height: min(57vh, 490px); min-height: 350px; }
+          .card-front, .card-back { padding: 55px 17px 48px; }
+          .card-text { font-size: clamp(1.6rem, 5.4vw, 2.35rem); }
+          .card-back .card-text { font-size: clamp(2.5rem, 9vw, 4rem); }
+          .nav-buttons { flex-wrap: wrap; }
+          .btn-main { flex: 1 1 42%; justify-content: center; }
+          .flip-hint { font-size: .8rem; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="title-container">
+            <h1>⚡ 에너지와 수송 개념 퀴즈</h1>
+            <p>중2 기술·가정 | 교실 화면용 큰 글씨 카드 퀴즈</p>
+        </div>
+        <div class="top-buttons">
+            <div class="font-controls"><button class="icon-btn" onclick="changeFont(-1)" title="글씨 작게">A−</button><button class="icon-btn" onclick="changeFont(1)" title="글씨 크게">A+</button></div>
+            <button class="icon-btn" onclick="toggleDarkMode()" title="다크 모드 전환">🌙</button>
+            <button class="icon-btn" onclick="shuffleCards()" title="카드 섞기">🎲 섞기</button>
+            <button class="icon-btn" onclick="resetProgress()" title="초기화">🔄</button>
+        </div>
+    </header>
+
+    <div class="progress-wrapper">
+        <div class="stats-bar">
+            <span>카드: <span id="current-index">1</span> / <span id="total-cards">18</span></span>
+            <span>성공: <span id="known-count" style="color: var(--success-color);">0</span> | 복습 필요: <span id="unknown-count" style="color: var(--danger-color);">0</span></span>
+        </div>
+        <div class="progress-container">
+            <div class="progress-fill" id="progress-bar"></div>
+        </div>
+    </div>
+
+    <div class="card-container" id="card-container" onclick="flipCard()">
+        <div class="card-inner">
+            <!-- 앞면 (질문/설명) -->
+            <div class="card-front">
+                <span class="badge">문제 (Q)</span>
+                <div class="card-text" id="front-text">질문 불러오는 중...</div>
+                <div class="hint-box" id="hint-text">💡 힌트 내용</div>
+                <div class="flip-hint">🖱️ 카드를 클릭하거나 [스페이스바]를 눌러 정답 확인</div>
+            </div>
+            <!-- 뒷면 (정답) -->
+            <div class="card-back">
+                <span class="badge" style="background:#dbeafe; color:#1e40af;">정답 (A)</span>
+                <div class="card-text" id="back-text">정답 불러오는 중...</div>
+                <div class="flip-hint">🖱️ 클릭시 다시 문제로 뒤집힙니다</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <div class="score-buttons">
+            <button class="btn-score btn-wrong" onclick="markCard(false, event)">
+                ❌ 몰라요 (다시 공부)
+            </button>
+            <button class="btn-score btn-correct" onclick="markCard(true, event)">
+                ⭕ 알아요 (완료)
+            </button>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="btn-main" onclick="prevCard(event)">◀ 이전</button>
+            <button class="btn-main" onclick="toggleHint(event)">💡 힌트 보기</button>
+            <button class="btn-main" onclick="speakText(event)">🔊 읽어주기</button>
+            <button class="btn-main btn-accent" onclick="nextCard(event)">다음 ▶</button>
+        </div>
+    </div>
+
+    <footer>
+        <div>💡 웹 브라우저에서 인터넷 연결 없이 작동하는 오프라인 프로그램입니다.</div>
+        <div class="keyboard-tip">⌨️ 키보드 단축키: [←/→] 이전/다음 | [스페이스바] 카드 뒤집기 | [H] 힌트</div>
+    </footer>
+
+    <script>
+        const originalFlashcards = [
+            { front: "⚡ 물리적인 일을 할 수 있는 능력", back: "에너지", hint: "💡 모든 활동과 수송의 근원이 되는 물리적 개념입니다." },
+            { front: "🌿 자연에서 직접 얻을 수 있는 최초의 에너지 (석탄, 석유, 태양광 등)", back: "1차 에너지", hint: "💡 가공되기 전 자연 상태 그대로의 에너지를 의미합니다." },
+            { front: "🔌 1차 에너지를 가공하여 우리 생활에 편리하게 만든 에너지 (전기, 도시가스 등)", back: "2차 에너지", hint: "💡 변형 및 가공 과정을 거쳐 사용하는 에너지입니다." },
+            { front: "🧪 화석 연료를 변환하거나 수소·산소 반응을 이용해 만드는 새로운 에너지", back: "신에너지", hint: "💡 신재생에너지 중 '신'에 해당하며 수소, 연료 전지 등이 있습니다." },
+            { front: "☀️ 햇빛, 바람, 물, 지열 등 고갈되지 않는 무제한 자연 자원 에너지", back: "재생에너지", hint: "💡 계속해서 다시 생겨나는 깨끗한 청정에너지입니다." },
+            { front: "🔋 수소와 산소의 화학 반응으로 전기를 직접 생산하는 장치", back: "연료 전지", hint: "💡 친환경 수소 자동차나 건물 발전에 쓰입니다." },
+            { front: "🌊 밀물과 썰물의 높이차(조수 간만의 차)를 이용한 해양 발전 방식", back: "조력 발전", hint: "💡 해수면의 '높낮이 차이'가 포인트입니다." },
+            { front: "🌊 파도의 상하 운동으로 생긴 공기의 압축력을 이용한 발전 방식", back: "파력 발전", hint: "💡 꿀렁이는 '파도'의 힘을 이용합니다." },
+            { front: "🍃 가축 배설물, 음식 쓰레기 등 유기체(바이오매스)를 연료로 쓰는 재생에너지", back: "바이오에너지", hint: "💡 생물 자원을 뜻하는 단어가 이름에 포함되어 있습니다." },
+            { front: "📦 물건이나 재료를 생산자로부터 소비자에게 이동시키는 모든 활동", back: "물류", hint: "💡 수송, 보관, 포장 등을 포함하는 유통의 한 축입니다." },
+            { front: "🚚 사람이나 물건을 한 장소에서 다른 장소로 이동시키는 수단이나 방법", back: "수송 기술", hint: "💡 육상, 해상, 항공 등의 방식으로 대상을 옮기는 기술입니다." },
+            { front: "🚘 엔진(내연기관)과 모터(전동기)를 함께 장착해 연비를 높인 친환경 차", back: "하이브리드 자동차", hint: "💡 두 가지 이상의 동력원을 혼합해서 사용합니다." },
+            { front: "🤖 운전자가 직접 조종하지 않아도 스스로 도로 상황을 파악해 주행하는 자동차", back: "자율주행 자동차", hint: "💡 카메라와 센서, 인공지능 기술이 결합된 미래형 자동차입니다." },
+            { front: "🧲 자기력을 이용하여 차량을 선로 위에 띄워 마찰 없이 달리는 열차", back: "자기 부상 열차", hint: "💡 자석의 힘으로 공중에 떠서 갑니다." },
+            { front: "🚀 진공 튜브 속에서 공기 저항 없이 매우 빠른 속도로 이동하는 수단", back: "하이퍼루프", hint: "💡 캡슐 형태의 열차가 튜브 안을 달립니다." },
+            { front: "💧 물 속의 물체가 수압 차에 의해 물 위로 뜨려는 힘", back: "부력", hint: "💡 배가 물 위에 뜬 상태를 유지하게 해주는 힘입니다." },
+            { front: "✈️ 날개 위아래의 공기 속도차와 압력차로 인해 비행기를 위로 띄우는 힘", back: "양력", hint: "💡 베르누이 정리와 관련되어 비행기를 들어 올려줍니다." },
+            { front: "✈️ 1903년 가솔린 기관을 이용해 최초로 동력 비행에 성공한 형제", back: "라이트 형제", hint: "💡 자전거 점포를 운영하며 비행기를 연구했던 형제입니다." },
+            { front: "🌌 스스로 산화제를 탑재하여 공기가 없는 우주 공간에서도 비행하는 수단", back: "로켓", hint: "💡 외부 산소 없이 발사되어 대기권 밖으로 나갈 수 있습니다." },
+            { front: "🚗 자동차 구성 중 승객이 탑승하거나 화물을 싣는 외형 공간", back: "차체", hint: "💡 섀시 위에 설치되는 자동차의 겉모양과 탑승 공간입니다." },
+            { front: "🔧 자동차 주행에 필요한 핵심 기계 장치들이 모인 밑바닥 골격", back: "섀시", hint: "💡 엔진, 변속기, 바퀴, 제동장치 등이 부착되는 뼈대입니다." },
+            { front: "🧭 자동차 섀시 중 진행 방향을 바꾸기 위해 바퀴 각도를 제어하는 장치", back: "조향 장치", hint: "💡 운전대의 핸들과 연결되어 방향을 전환합니다." },
+            { front: "🛑 자동차 섀시 중 속도를 줄이거나 차량을 완전히 멈추게 하는 장치", back: "제동 장치", hint: "💡 브레이크 시스템을 의미합니다." },
+            { front: "⚙️ 엔진에서 발생한 동력을 구동 바퀴까지 전달해 주는 장치", back: "동력 전달 장치", hint: "💡 클러치, 변속기 등이 여기에 해당합니다." },
+            { front: "🚃 전차선으로부터 전기를 직접 공급받아 모터를 돌려 달리는 기차", back: "전동차", hint: "💡 지하철이나 KTX 고속열차 등이 여기에 속합니다." }
+        ];
+
+        let cards = [...originalFlashcards];
+        let fontStep = 0;
+        function changeFont(direction) {
+            fontStep = Math.max(-2, Math.min(5, fontStep + direction));
+            document.querySelectorAll('.card-front .card-text').forEach(el => el.style.fontSize = `clamp(1.7rem, ${3.5 + fontStep * .45}vw, ${3.65 + fontStep * .45}rem)`);
+            document.querySelectorAll('.card-back .card-text').forEach(el => el.style.fontSize = `clamp(2.7rem, ${6.8 + fontStep * .65}vw, ${6.5 + fontStep * .65}rem)`);
+        }
+        let currentIndex = 0;
+        let isFlipped = false;
+        let isHintShown = false;
+        let knownCards = new Set();
+        let unknownCards = new Set();
+
+        function updateCardUI() {
+            const currentCard = cards[currentIndex];
+            document.getElementById('front-text').innerText = currentCard.front;
+            document.getElementById('back-text').innerText = currentCard.back;
+            document.getElementById('hint-text').innerText = currentCard.hint;
+
+            document.getElementById('current-index').innerText = currentIndex + 1;
+            document.getElementById('total-cards').innerText = cards.length;
+
+            const progressPercent = ((currentIndex + 1) / cards.length) * 100;
+            document.getElementById('progress-bar').style.width = progressPercent + '%';
+
+            // Reset flip & hint states for new card
+            isFlipped = false;
+            isHintShown = false;
+            document.getElementById('card-container').classList.remove('flipped');
+            document.getElementById('hint-text').classList.remove('show');
+
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('known-count').innerText = knownCards.size;
+            document.getElementById('unknown-count').innerText = unknownCards.size;
+        }
+
+        function flipCard() {
+            isFlipped = !isFlipped;
+            const container = document.getElementById('card-container');
+            if (isFlipped) {
+                container.classList.add('flipped');
+            } else {
+                container.classList.remove('flipped');
+            }
+        }
+
+        // 카드가 뒤집힌 상태에서 이동할 때 정답이 미리 보이는 현상 방지
+        function changeCardIndex(newIndex) {
+            if (newIndex < 0 || newIndex >= cards.length) return;
+            
+            const container = document.getElementById('card-container');
+            if (isFlipped) {
+                isFlipped = false;
+                container.classList.remove('flipped');
+                // 카드가 90도 회전하는 중간 시점(300ms)에 내용을 교체하여 다음 정답 노출 방지
+                const inner = container.querySelector('.card-inner');
+                inner.style.transition = 'none';
+                currentIndex = newIndex;
+                updateCardUI();
+                void inner.offsetHeight;
+                inner.style.transition = '';
+            } else {
+                currentIndex = newIndex;
+                updateCardUI();
+            }
+        }
+
+        function nextCard(e) {
+            if (e) e.stopPropagation();
+            if (currentIndex < cards.length - 1) {
+                changeCardIndex(currentIndex + 1);
+            } else {
+                alert('🎉 모든 카드를 다 확인했습니다!');
+            }
+        }
+
+        function prevCard(e) {
+            if (e) e.stopPropagation();
+            if (currentIndex > 0) {
+                changeCardIndex(currentIndex - 1);
+            }
+        }
+
+        function toggleHint(e) {
+            if (e) e.stopPropagation();
+            isHintShown = !isHintShown;
+            const hintBox = document.getElementById('hint-text');
+            if (isHintShown) {
+                hintBox.classList.add('show');
+            } else {
+                hintBox.classList.remove('show');
+            }
+        }
+
+        function markCard(isKnown, e) {
+            if (e) e.stopPropagation();
+            if (isKnown) {
+                knownCards.add(currentIndex);
+                unknownCards.delete(currentIndex);
+            } else {
+                unknownCards.add(currentIndex);
+                knownCards.delete(currentIndex);
+            }
+            updateStats();
+            if (currentIndex < cards.length - 1) nextCard();
+        }
+
+        function shuffleCards() {
+            cards.sort(() => Math.random() - 0.5);
+            knownCards.clear();
+            unknownCards.clear();
+            changeCardIndex(0);
+        }
+
+        function resetProgress() {
+            knownCards.clear();
+            unknownCards.clear();
+            cards = [...originalFlashcards];
+            changeCardIndex(0);
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        function speakText(e) {
+            if (e) e.stopPropagation();
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Stop active speech
+                const text = isFlipped ? cards[currentIndex].back : cards[currentIndex].front;
+                // Remove emoji before speech for cleaner voice output
+                const cleanText = text.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '');
+                
+                const utterance = new SpeechSynthesisUtterance(cleanText);
+                utterance.lang = 'ko-KR';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert('이 브라우저는 음성 읽기 기능을 지원하지 않습니다.');
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                flipCard();
+            } else if (e.code === 'ArrowRight') {
+                nextCard();
+            } else if (e.code === 'ArrowLeft') {
+                prevCard();
+            } else if (e.code === 'KeyH') {
+                toggleHint();
+            }
+        });
+
+        // Initialize App on load
+        window.onload = function() {
+            updateCardUI();
+        };
+    </script>
+</body>
+</html>
